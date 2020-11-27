@@ -1,7 +1,9 @@
 require_relative "price_table"
 require_relative "bill"
+require_relative "take_input"
 
 class Cart
+  include TakeInput
   attr_reader :orders
 
   def initialize
@@ -11,8 +13,7 @@ class Cart
   def billing
     if (@orders.length > 0)
       bill = Bill.new(@orders)
-      discounted_total_amount = bill.discounted_amount
-      saved_amount = bill.saved_amount
+      bill.print_bill
     else
       puts "No order has been placed."
     end
@@ -27,25 +28,7 @@ class Cart
 
     billing
   end
-
-  def take_input()
-    puts "Please enter all the items purchased separated by a comma."
-    user_input = gets.chomp!
-
-    if (user_input.length > 0)
-      parse_input_string(user_input)
-    else
-      puts "No order has been placed."
-      take_input
-    end
-  end
-
-  def parse_input_string(user_input)
-    item_list = user_input.downcase.split(",").map { |item| item.gsub(/\s+/, "") }
-    add_to_cart(item_list)
-  end
 end
 
 cart = Cart.new
-
 cart.take_input
