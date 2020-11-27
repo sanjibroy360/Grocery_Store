@@ -17,24 +17,40 @@ class Bill
       item_info = @price_list[item.to_sym]
       total += @items_quantity[item] * item_info[:unit_price]
     end
-
-    puts "Actual price is = #{total_amount_without_sale}"
     total_amount_without_sale
   end
 
   def discounted_amount
     total_discounted_amount = @items_quantity.keys.inject(0) do |total, item|
-      item_info = @price_list[item.to_sym]
-      discounted_price = (@items_quantity[item] / item_info[:sale_quantity]) * item_info[:sale_price]
-      price = (@items_quantity[item] % item_info[:sale_quantity]) * item_info[:unit_price]
-      total += discounted_price + price
+      total += price_of_item(item)
     end
-    puts "Discounted price is = #{total_discounted_amount}"
     total_discounted_amount
   end
 
+  def price_of_item(item)
+    item_info = @price_list[item.to_sym]
+    if (item_info[:sale_quantity] >= 1)
+      discounted_price = (@items_quantity[item] / item_info[:sale_quantity]) * item_info[:sale_price]
+      price = (@items_quantity[item] % item_info[:sale_quantity]) * item_info[:unit_price]
+      (discounted_price + price)
+    else
+      @items_quantity[item] * item_info[:unit_price]
+    end
+  end
+
   def saved_amount
-    puts "saved price is = #{actual_amount - discounted_amount}"
     actual_amount - discounted_amount
+  end
+
+  def print_bill
+    dotted_line = "\n----------------------------------------------\n"
+    table_head = "\n\nItem\t\t Quantity  \t\tPrice"
+    table_body = @items_quantity.keys.inject("") do |str, item|
+      str += "#{item.capitalize}\t\t #{@items_quantity[item]}\t\t\t$#{price_of_item(item)}\n\n"
+    end
+    str = "#{table_head}#{dotted_line}#{table_body}\n"
+    print str
+    puts "Total price : $#{discounted_amount.round(2)}"
+    puts "You saved $#{saved_amount.round(2)} today.\n\n"
   end
 end

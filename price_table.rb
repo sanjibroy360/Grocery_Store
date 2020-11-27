@@ -10,7 +10,7 @@ class PriceTable
       },
       bread: {
         unit_price: 2.17,
-        sale_price: 3.00,
+        sale_price: 6.00,
         sale_quantity: 3,
       },
       banana: {
