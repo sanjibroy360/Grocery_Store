@@ -29,6 +29,3 @@ class Cart
     billing
   end
 end
-
-cart = Cart.new
-cart.take_input
